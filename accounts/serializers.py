@@ -20,6 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
             return value
     def save(self):
         reg = CustomUser(
+            name=self.validated_data['name'],
             email=self.validated_data['email'],
             username=self.validated_data['username'],
         )
@@ -36,5 +37,8 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         # Add custom claims
         token['username'] = user.username
         token['applied'] = user.is_staff
+
+        
+
         return token
 
