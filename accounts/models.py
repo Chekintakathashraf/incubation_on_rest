@@ -45,4 +45,4 @@ class Slots(models.Model):
     companyname = models.ForeignKey(Application, on_delete=models.CASCADE,null=True)
 
     def __str__(self):
-        return self.id
+        return self.serial_number

@@ -21,6 +21,6 @@ urlpatterns = [
 
     path('addslots/',views.AddSlots.as_view(),name='addslots'),
     path('updateslot/<int:id>/',views.UpdateSlot.as_view(),name='updateslot'),
-    path('getslots/<int:id>',views.GetSlotsDetailsView.as_view(),name='getslotsdetails'),
+    path('getslots/<int:id>/',views.GetSlotsDetailsView.as_view(),name='getslotsdetails'),
     path('getslots/',views.GetSlotsView.as_view(),name='getslots'),
 ]

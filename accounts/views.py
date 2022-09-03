@@ -138,37 +138,33 @@ class AddSlots(APIView):
             return Response(serializer.errors)
 
 class UpdateSlot(APIView):
-    permission_classes =[IsAdminUser]
-    def post(self, request):
-        serializer = SlotsSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        else:
-            return Response(serializer.errors)
     def put(self,request,id):
         details = Slots.objects.get(id=id)
-        serializer = SlotsSerializer(details,data=request.data,)
+        serializer = SlotsSerializer(details,data=request.data,partial = True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         else:
             return Response(serializer.errors)  
     def delete(self,request,id):
-        details = Slots.objects.get(id=id)
-        details.delete()
-        return Response({'message':'Slot deleted'})
+        try:
+            details = Slots.objects.get(id=id)
+            details.delete()
+            return Response({'message':'Slot deleted'})
+        except:
+            message = {'message':'No User with this id exist'}
+            return Response(message,status=status.HTTP_400_BAD_REQUEST)
 
 class GetSlotsDetailsView(APIView):
     permission_classes=[IsAdminUser]
     serializer_classes = SlotsSerializer
     def get(self, request,id):
         try:
-            slots = CustomUser.objects.get(id=id)
+            slots = Slots.objects.get(id=id)
             serializer = SlotsSerializer(slots,many=False)   
             return Response(serializer.data)
         except:
-            message = {'message':'No User with this id already exist'}
+            message = {'message':'No User with this id exist'}
             return Response(message,status=status.HTTP_400_BAD_REQUEST)
 
 class GetSlotsView(APIView):
