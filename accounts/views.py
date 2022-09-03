@@ -1,9 +1,10 @@
 
+
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny,IsAuthenticated,IsAdminUser
 from accounts.models import CustomUser
-from accounts.serializers import UserSerializer,MyTokenObtainPairSerializer
+from accounts.serializers import UserSerializer,MyTokenObtainPairSerializer,ApplicationSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -34,6 +35,7 @@ class UserRegister(APIView):
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
+
 class GetUserDetailsView(APIView):
     # permission_classes=[IsAdminUser]
     serializer_classes = UserSerializer
@@ -54,4 +56,18 @@ class GetUsersView(APIView):
         users = CustomUser.objects.all()
         serializer = UserSerializer(users,many=True)   
         return Response(serializer.data)
-        
+
+
+class AddApplication(APIView):
+    permission_classes=[IsAuthenticated]
+
+    def post(self, request):
+        print('fawaazaaa')
+        serializer = ApplicationSerializer(data=request.data)
+        if serializer.is_valid():
+            print('sanin')
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            print(serializer.errors)
+            return Response(serializer.errors)
