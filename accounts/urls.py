@@ -15,4 +15,6 @@ urlpatterns = [
 
 
     path('addapplication/',views.AddApplication.as_view(),name='addapplication'),
+    path('updateapplication/<int:id>/',views.UpdateApplication.as_view(),name='updateapplication'),
+    path('getapplications/',views.GetApplicationsView.as_view(),name='getapplications'),
 ]

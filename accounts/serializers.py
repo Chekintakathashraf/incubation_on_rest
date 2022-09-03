@@ -65,3 +65,9 @@ class ApplicationSerializer(serializers.ModelSerializer):
      class Meta:
         model = Application
         fields = '__all__'
+
+        def validate_phone(self,value):
+            if len(value)<10 or len(value)>10:
+                raise serializers.ValidationError("Phone Number must be 10 characters")
+            else:
+                return value

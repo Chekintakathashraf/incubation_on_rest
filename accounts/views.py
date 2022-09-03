@@ -3,7 +3,7 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny,IsAuthenticated,IsAdminUser
-from accounts.models import CustomUser
+from accounts.models import CustomUser,Application
 from accounts.serializers import UserSerializer,MyTokenObtainPairSerializer,ApplicationSerializer
 from rest_framework.response import Response
 from rest_framework import status
@@ -62,12 +62,55 @@ class AddApplication(APIView):
     permission_classes=[IsAuthenticated]
 
     def post(self, request):
-        print('fawaazaaa')
         serializer = ApplicationSerializer(data=request.data)
         if serializer.is_valid():
-            print('sanin')
             serializer.save()
             return Response(serializer.data)
         else:
             print(serializer.errors)
             return Response(serializer.errors)
+
+class UpdateApplication(APIView):
+    permission_classes=[IsAdminUser]
+    def get(self, request,id):
+        details = Application.objects.get(id=id)
+        serializer = ApplicationSerializer(details,context={'request': request})
+        return Response(serializer.data)
+    def put(self, request,id):
+        print(request.body)
+        details = Application.objects.get(id=id)
+        serializer = ApplicationSerializer(details,data=request.data,)
+        if serializer.is_valid():
+            print(serializer.validated_data)
+            serializer.save()
+            print("Update application successfully updated")
+            return Response(serializer.data)
+        else:
+            print("Update application failed")
+            return Response(serializer.errors)    
+    def delete(self, request,id):
+        details = Application.objects.get(id=id)
+        details.delete()
+        return Response({'message':'Application deleted'})
+    def patch(self, request,id):
+        details = Application.objects.get(id=id)
+        serializer = ApplicationSerializer(details,data=request.data,partial = True)
+        if serializer.is_valid():
+            print(serializer.validated_data)
+            serializer.save()
+            print("Update application successfully updated")
+            return Response(serializer.data)
+        else:
+            print("Update application failed")
+            print(serializer.errors)
+            return Response(serializer.errors)
+
+
+class GetApplicationsView(APIView):
+    permission_classes=[IsAdminUser]
+    serializer_classes = ApplicationSerializer
+    def get(self, request):
+    
+        applications = Application.objects.all()
+        serializer = ApplicationSerializer(applications,many=True)   
+        return Response(serializer.data)
