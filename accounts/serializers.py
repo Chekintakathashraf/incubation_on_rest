@@ -58,10 +58,6 @@ class SlotsSerializer(serializers.ModelSerializer):
         model = Slots
         fields = "__all__"
 
-        def validate_status(self,company_name):
-            application = Application.objects.filter(company_name=company_name)
-            status = application.status
-            if status != "Registration_approved":
-                raise serializers.ValidationError("your application should be verified")
-            else:
-                return company_name
+
+        
+        

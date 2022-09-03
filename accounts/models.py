@@ -1,3 +1,4 @@
+from ssl import DefaultVerifyPaths
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -10,6 +11,8 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+
+
 
 class Application(models.Model):
     incubation_choices =(('Physical_Incubation','Physical_Incubation'),('Virtual_Incubation ' ,'Virtual_Incubation' ))
@@ -35,7 +38,8 @@ class Application(models.Model):
     marketplan =  models.TextField()
     incubationtype = models.CharField(max_length=100, choices=incubation_choices)
     detailProposal = models.TextField()
-    status =  models.CharField(max_length=100, choices=status_choices,null=True)
+    status =  models.CharField(max_length=100, choices=status_choices,default="Registration_pending")
+    status_boolean = models.BooleanField(default=False)
 
     def __str__(self):
         return self.company_name 

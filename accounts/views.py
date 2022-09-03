@@ -126,6 +126,7 @@ class UpdateApplicationStatus(APIView):
             details.status = "Registration_pending"
         if stid == 2:
             details.status = "Registration_approved"
+            details.status_boolean = True
         else :
             details.status = "Registration_rejected"
         details.save()
