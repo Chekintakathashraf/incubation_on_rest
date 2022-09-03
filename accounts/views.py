@@ -115,20 +115,32 @@ class GetApplicationsView(APIView):
         serializer = ApplicationSerializer(applications,many=True)   
         return Response(serializer.data)
 
-# @api_view(['GET'])
-def UpdateApplicationStatus(request,id):
-    application = Application.objects.get(id=id)
-    # status = application.status
-    print("---------------------")
-    print(application.status)
-    print("---------------------")
-    application.status = "Registration_approved"
-    application.save()
-    return Response({"message" : "Status updated successfully"})
+
+
+class UpdateApplicationStatus(APIView):
+    permission_classes=[IsAdminUser]
+    serializer_classes = ApplicationSerializer
+    def patch(self, request,id,stid):
+        details = Application.objects.get(id=id)
+        if stid == 1:
+            details.status = "Registration_pending"
+        if stid == 2:
+            details.status = "Registration_approved"
+        else :
+            details.status = "Registration_rejected"
+        details.save()
+        serializer = ApplicationSerializer(details,data=request.data,partial = True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            print("Update application failed")
+            print(serializer.errors)
+            return Response(serializer.errors)
 
 
 class AddSlots(APIView):
-    permission_classes =[IsAdminUser]
+    permission_classes =[IsAuthenticated]
     def post(self, request):
         serializer = SlotsSerializer(data=request.data)
         if serializer.is_valid():

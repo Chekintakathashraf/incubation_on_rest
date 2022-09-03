@@ -16,7 +16,7 @@ class Application(models.Model):
     status_choices =(('Registration_pending','Registration_pending'),('Registration_approved ','Registration_approved' ,),('Registration_rejected','Registration_rejected',))
 
     
-    user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True)
+    username = models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True)
     Address = models.TextField()
     city =models.CharField(max_length=200)
     state=models.CharField(max_length=200)
@@ -42,7 +42,7 @@ class Application(models.Model):
 
 class Slots(models.Model):
     serial_number = models.CharField(unique=True,max_length=2)
-    companyname = models.ForeignKey(Application, on_delete=models.CASCADE,null=True)
+    company_name = models.ForeignKey(Application, on_delete=models.CASCADE,null=True)
 
     def __str__(self):
         return self.serial_number

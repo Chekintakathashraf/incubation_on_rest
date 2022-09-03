@@ -17,7 +17,7 @@ urlpatterns = [
     path('addapplication/',views.AddApplication.as_view(),name='addapplication'),
     path('updateapplication/<int:id>/',views.UpdateApplication.as_view(),name='updateapplication'),
     path('getapplications/',views.GetApplicationsView.as_view(),name='getapplications'),
-    path('updateapplicationstatus/<int:id>/',views.UpdateApplicationStatus,name='updateapplicationstatus'),
+    path('updateapplicationstatus/<int:id>/<int:stid>/',views.UpdateApplicationStatus.as_view(),name='updateapplicationstatus'),
 
     path('addslots/',views.AddSlots.as_view(),name='addslots'),
     path('updateslot/<int:id>/',views.UpdateSlot.as_view(),name='updateslot'),

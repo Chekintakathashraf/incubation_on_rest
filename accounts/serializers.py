@@ -40,26 +40,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token['applied'] = user.is_staff
         
         return token
-    # print("qqqqqqqqqqqqqqqqqqqqqqqqqqqq")
-
-
-
-    # def cookies(token):
-            
-    #     response = Response()
-    #     response.set_cookie(key='refresh_token',value=token,httponly=True)
-    #     response.data = {
-    #     'refresh_token' : token
-    #     }
-    #     print("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-    #     print(response)
-    #     return response
-    # token = get_token(cls, user)
-    # cookies(token)
-# token = MyTokenObtainPairSerializer.get_token()
-# cookie = MyTokenObtainPairSerializer.cookies(token)
-
-    
+  
 
 class ApplicationSerializer(serializers.ModelSerializer):
      class Meta:
@@ -76,3 +57,11 @@ class SlotsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Slots
         fields = "__all__"
+
+        def validate_status(self,company_name):
+            application = Application.objects.filter(company_name=company_name)
+            status = application.status
+            if status != "Registration_approved":
+                raise serializers.ValidationError("your application should be verified")
+            else:
+                return company_name
