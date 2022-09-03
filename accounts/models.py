@@ -13,7 +13,7 @@ class CustomUser(AbstractUser):
 
 class Application(models.Model):
     incubation_choices =(('Physical_Incubation','Physical_Incubation'),('Virtual_Incubation ' ,'Virtual_Incubation' ))
-    status_choices =(('Registration_pending','Registration_pending'),('Registration_Under_Process ','Registration_Under_Process' ,),('Registration_rejected','Registration_rejected',))
+    status_choices =(('Registration_pending','Registration_pending'),('Registration_approved ','Registration_approved' ,),('Registration_rejected','Registration_rejected',))
 
     
     user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True)
@@ -39,3 +39,10 @@ class Application(models.Model):
 
     def __str__(self):
         return self.company_name 
+
+class Slots(models.Model):
+    serial_number = models.CharField(unique=True,max_length=2)
+    companyname = models.ForeignKey(Application, on_delete=models.CASCADE,null=True)
+
+    def __str__(self):
+        return self.id

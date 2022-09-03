@@ -1,6 +1,6 @@
 
 from rest_framework import serializers
-from accounts . models import CustomUser,Application
+from accounts . models import CustomUser,Application,Slots
 from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
@@ -71,3 +71,8 @@ class ApplicationSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("Phone Number must be 10 characters")
             else:
                 return value
+
+class SlotsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Slots
+        fields = "__all__"

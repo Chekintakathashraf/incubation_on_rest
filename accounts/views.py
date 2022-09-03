@@ -1,10 +1,10 @@
 
-
+from rest_framework.decorators import api_view,permission_classes 
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny,IsAuthenticated,IsAdminUser
-from accounts.models import CustomUser,Application
-from accounts.serializers import UserSerializer,MyTokenObtainPairSerializer,ApplicationSerializer
+from accounts.models import CustomUser,Application,Slots
+from accounts.serializers import UserSerializer,MyTokenObtainPairSerializer,ApplicationSerializer,SlotsSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -113,4 +113,69 @@ class GetApplicationsView(APIView):
     
         applications = Application.objects.all()
         serializer = ApplicationSerializer(applications,many=True)   
+        return Response(serializer.data)
+
+# @api_view(['GET'])
+def UpdateApplicationStatus(request,id):
+    application = Application.objects.get(id=id)
+    # status = application.status
+    print("---------------------")
+    print(application.status)
+    print("---------------------")
+    application.status = "Registration_approved"
+    application.save()
+    return Response({"message" : "Status updated successfully"})
+
+
+class AddSlots(APIView):
+    permission_classes =[IsAdminUser]
+    def post(self, request):
+        serializer = SlotsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
+
+class UpdateSlot(APIView):
+    permission_classes =[IsAdminUser]
+    def post(self, request):
+        serializer = SlotsSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
+    def put(self,request,id):
+        details = Slots.objects.get(id=id)
+        serializer = SlotsSerializer(details,data=request.data,)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)  
+    def delete(self,request,id):
+        details = Slots.objects.get(id=id)
+        details.delete()
+        return Response({'message':'Slot deleted'})
+
+class GetSlotsDetailsView(APIView):
+    permission_classes=[IsAdminUser]
+    serializer_classes = SlotsSerializer
+    def get(self, request,id):
+        try:
+            slots = CustomUser.objects.get(id=id)
+            serializer = SlotsSerializer(slots,many=False)   
+            return Response(serializer.data)
+        except:
+            message = {'message':'No User with this id already exist'}
+            return Response(message,status=status.HTTP_400_BAD_REQUEST)
+
+class GetSlotsView(APIView):
+    permission_classes=[IsAdminUser]
+    serializer_classes = SlotsSerializer
+    def get(self, request):
+    
+        slots = Slots.objects.all()
+        serializer = SlotsSerializer(slots,many=True)   
         return Response(serializer.data)
