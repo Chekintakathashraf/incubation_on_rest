@@ -47,17 +47,27 @@ class ApplicationSerializer(serializers.ModelSerializer):
         model = Application
         fields = '__all__'
 
+        extra_kwargs = {
+            'status' : {'read_only' : True},
+        }
+
         def validate_phone(self,value):
             if len(value)<10 or len(value)>10:
                 raise serializers.ValidationError("Phone Number must be 10 characters")
             else:
                 return value
 
+class UpdateApplicationStatusSerializer(ApplicationSerializer):
+    class Meta:
+        model = Application
+        fields = '__all__'
+
 class SlotsSerializer(serializers.ModelSerializer):
+    
     class Meta:
         model = Slots
         fields = "__all__"
 
-
+   
         
         

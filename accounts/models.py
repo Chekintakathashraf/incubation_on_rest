@@ -39,7 +39,6 @@ class Application(models.Model):
     incubationtype = models.CharField(max_length=100, choices=incubation_choices)
     detailProposal = models.TextField()
     status =  models.CharField(max_length=100, choices=status_choices,default="Registration_pending")
-    status_boolean = models.BooleanField(default=False)
 
     def __str__(self):
         return self.company_name 

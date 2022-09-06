@@ -1,10 +1,9 @@
 
-from rest_framework.decorators import api_view,permission_classes 
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny,IsAuthenticated,IsAdminUser
 from accounts.models import CustomUser,Application,Slots
-from accounts.serializers import UserSerializer,MyTokenObtainPairSerializer,ApplicationSerializer,SlotsSerializer
+from accounts.serializers import UserSerializer,MyTokenObtainPairSerializer,ApplicationSerializer,SlotsSerializer,UpdateApplicationStatusSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -37,7 +36,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 
 
 class GetUserDetailsView(APIView):
-    # permission_classes=[IsAdminUser]
+    permission_classes=[IsAdminUser]
     serializer_classes = UserSerializer
     def get(self, request,id):
         try:
@@ -119,18 +118,17 @@ class GetApplicationsView(APIView):
 
 class UpdateApplicationStatus(APIView):
     permission_classes=[IsAdminUser]
-    serializer_classes = ApplicationSerializer
+    serializer_classes = UpdateApplicationStatusSerializer
     def patch(self, request,id,stid):
         details = Application.objects.get(id=id)
         if stid == 1:
             details.status = "Registration_pending"
         if stid == 2:
             details.status = "Registration_approved"
-            details.status_boolean = True
         else :
             details.status = "Registration_rejected"
         details.save()
-        serializer = ApplicationSerializer(details,data=request.data,partial = True)
+        serializer = UpdateApplicationStatusSerializer(details,data=request.data,partial = True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -141,8 +139,9 @@ class UpdateApplicationStatus(APIView):
 
 
 class AddSlots(APIView):
-    permission_classes =[IsAuthenticated]
+    permission_classes =[IsAdminUser]
     def post(self, request):
+        
         serializer = SlotsSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
@@ -151,6 +150,7 @@ class AddSlots(APIView):
             return Response(serializer.errors)
 
 class UpdateSlot(APIView):
+    permission_classes=[IsAdminUser]
     def put(self,request,id):
         details = Slots.objects.get(id=id)
         serializer = SlotsSerializer(details,data=request.data,partial = True)
